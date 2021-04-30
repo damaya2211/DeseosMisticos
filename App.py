@@ -284,16 +284,6 @@ def editar_servicio(id):
          precio = request.form['precio']
          cantidad = request.form['cantidad']
          foto = request.files['foto']
-         
-         now = datetime.now()
-         tiempo = now.strftime("%Y%H%M%S")
-         
-         
-         if foto.filename !='':
-            nuevoNombreFoto=tiempo+foto.filename
-            foto.save("uploads/"+nuevoNombreFoto)
-            
-            
          cur = mysql.connection.cursor() 
          cur.execute(""" 
                      UPDATE productos 
@@ -303,7 +293,7 @@ def editar_servicio(id):
                      foto = %s 
                      WHERE id= %s 
                      """, 
-                     (nombre, precio, cantidad, nuevoNombreFoto, id))
+                     (nombre, precio, cantidad, foto, id))
          mysql.connection.commit()
          flash('Datos actualizados satisfactoriamente')
          return redirect(url_for('servicios'))
