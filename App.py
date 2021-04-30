@@ -50,38 +50,43 @@ def uploads(nombreFoto):
 def signup():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM admin')
-    data = cur.fetchall()
-    return render_template('signup.html', admin= data)
+    datas = cur.fetchall()
+    return render_template('signup.html', admin= datas)
 
 
-@app.route("/agregar_admin", methods = ['POST'])
+@app.route('/agregar_admin', methods=['POST'])
 def agregar_admin():
     if request.method == 'POST':
         nombre = request.form['nombre']
         email= request.form['email']
         cargo = request.form['cargo']
         contraseña = request.form['contraseña']
+        #obtenemos la conexión
         cur = mysql.connection.cursor()
+        #Insertamos la consulta
         cur.execute('INSERT INTO admin (nombre, email, cargo, contraseña) VALUES (%s, %s, %s, %s)', 
                     (nombre, email, cargo, contraseña))
         
+        #ejecutamos la consulta
         mysql.connection.commit()
-        flash('administrador creado Satisfactoriamente')
-        return redirect(url_for('createadmin'))
+        #respondemos al usuario la consulta
+        flash('Nuevo administrador creado Satisfactoriamente')
+        #retornamos a una pagina
+        return redirect(url_for('signup'))
 
 
 
-@app.route('/editad/<id>')
+@app.route('/editr/<id>')
 def get_admin(id):
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM admin WHERE id = %s', (id))
-    data = cur.fetchall()
-    return render_template('edit-admin.html',  admin = data[0])
+    datas = cur.fetchall()
+    return render_template('editr-admin.html',  admin = datas[0])
 
 
 
 
-@app.route('/update_admin/<id>', methods = ['POST'])
+@app.route('/update_admin/<id>', methods=['POST'])
 def update_admin(id):
      if request.method == 'POST':
          nombre = request.form['nombre']
@@ -91,16 +96,14 @@ def update_admin(id):
          cur = mysql.connection.cursor()
          cur.execute(""" 
                      UPDATE admin 
-                     SET nombre = %s, 
-                     email = %s, 
-                     cargo = %s, 
-                     contraseña = %s 
+                     SET nombre = %s, email = %s, 
+                     cargo = %s, contraseña = %s 
                      WHERE id= %s 
                      """, 
                      (nombre, email, cargo, contraseña, id))
          mysql.connection.commit()
          flash('Datos actualizados satisfactoriamente')
-         return redirect(url_for('signup'))
+         return redirect(url_for('Index'))
 
 
 @app.route('/delet/<string:id>')
@@ -108,7 +111,7 @@ def delet_admin(id):
     cur = mysql.connection.cursor()
     cur.execute('DELETE FROM admin WHERE id= {0}'.format(id))
     mysql.connection.commit()
-    flash('Contacto Eliminado')
+    flash('Administrador Eliminado de la cuenta')
     return redirect(url_for('signup'))
 
 #Fin admin
@@ -119,6 +122,7 @@ def delet_admin(id):
 @app.errorhandler(404)
 def page_error(error):
     return render_template("404.html"), 404
+
 
 
 
@@ -258,7 +262,7 @@ def agregar_servicios():
                     (nombre, precio, cantidad, nuevoNombreFoto))
         
         mysql.connection.commit()
-        flash('Servicio subido Satisfactoriamente')
+        flash('Servicio subido a la pagina Satisfactoriamente')
         
         return redirect(url_for('createservicios')) 
 
@@ -269,7 +273,7 @@ def get_servicio(id):
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM productos WHERE id = %s', (id))
     data = cur.fetchall()
-    return render_template('edit_servicios.html',  producto= data[0]) 
+    return render_template('edit_servicios.html',  producto = data[0]) 
 
 
 
@@ -280,6 +284,16 @@ def editar_servicio(id):
          precio = request.form['precio']
          cantidad = request.form['cantidad']
          foto = request.files['foto']
+         
+         now = datetime.now()
+         tiempo = now.strftime("%Y%H%M%S")
+         
+         
+         if foto.filename !='':
+            nuevoNombreFoto=tiempo+foto.filename
+            foto.save("uploads/"+nuevoNombreFoto)
+            
+            
          cur = mysql.connection.cursor() 
          cur.execute(""" 
                      UPDATE productos 
@@ -289,7 +303,7 @@ def editar_servicio(id):
                      foto = %s 
                      WHERE id= %s 
                      """, 
-                     (nombre, precio, cantidad, foto, id))
+                     (nombre, precio, cantidad, nuevoNombreFoto, id))
          mysql.connection.commit()
          flash('Datos actualizados satisfactoriamente')
          return redirect(url_for('servicios'))
@@ -401,7 +415,7 @@ def agregar_articulo():
                     (titulo, subtitulo, parrafo, nuevoNombreFoto))
         
         mysql.connection.commit()
-        flash('articulo subido Satisfactoriamente')
+        flash('articulo o blog subido Satisfactoriamente')
         
         return redirect(url_for('createblog')) 
 
@@ -439,7 +453,7 @@ def edit_blog(id):
 
 
 
-@app.route('/eliminar/<string:id>')
+@app.route('/elimina/<string:id>')
 def eliminar_articulo(id):
     cur = mysql.connection.cursor()
    

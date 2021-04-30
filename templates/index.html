@@ -16,35 +16,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
 
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">{{ message }} </h4>
+            <p>{{ contact }}</p>
+            <hr>
+            <p class="mb-0">Sobelo</p>
+        </div>
+      
+        
+
         {% endfor %}
 
     {% endif %}
 
 {% endwith  %}
-
-<section>	
-    <div id="banner">
-      <div class="container">
-        <div class="row">
-          <div class="col-6 col-12-medium">
-
-            <!-- Banner Copy -->
-              <h2>Amarres de Amor</h2>
-              <p>Tienes Problemas en el Amor? Tu pareja a cambiado? No duermes bien en la noche (No descansas)? Sientes dolores sin ningun motivo aparente?...</p>
-              <a href="https://bit.ly/2VrZgF7" class="button-large">Consulta ya, click!</a>
-
-          </div>
-          <div class="col-6 col-12-medium imp-medium">
-
-            <!-- Banner Image -->
-              <a href="#" class="bordered-feature-image"><img src="{{ url_for('static', filename='img/chaman.png') }}" alt="" /></a>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
 
 
 <div class="container">
